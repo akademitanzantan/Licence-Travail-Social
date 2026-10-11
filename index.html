@@ -286,9 +286,6 @@ tbody tr{border-top:1px solid var(--border)}tbody tr:hover{background:color-mix(
 .colorf input[type=color]{width:40px;height:32px;border:0;padding:0;background:none;cursor:pointer}
 .fg2,.fg3{grid-template-columns:1fr}
 @media(min-width:768px){.fg2{grid-template-columns:1fr 1fr}.fg3{grid-template-columns:repeat(3,1fr)}}
-table.gtab{width:100%;border-collapse:collapse;font-size:14px}table.gtab th{text-align:left;padding:8px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted-foreground);border-bottom:1px solid var(--border)}table.gtab td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}.gin{width:84px}
-table.gtab{}.logoimg{height:36px;width:auto;max-width:140px;object-fit:contain;border-radius:6px}.sel-sm{height:32px;font-size:13px;padding:0 6px;max-width:190px}.axrow{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.axrow .nm{flex:1;font-weight:500}
-@media print{header.top,.bar-demo,.noprint{display:none!important}body{background:#fff;zoom:1!important}.paper{box-shadow:none!important;border:none!important}}
 </style>
 </head>
 <body>
@@ -308,11 +305,11 @@ table.gtab{}.logoimg{height:36px;width:auto;max-width:140px;object-fit:contain;b
    la sécurité repose sur les règles RLS du fichier supabase_schema.sql.
    Laissez vide pour le MODE DÉMONSTRATION (données locales au navigateur).
    ===================================================================== */
-var SUPABASE_URL = "https://qolpaedhemyatuxikaiq.supabase.co"
-var SUPABASE_ANON_KEY = "sb_publishable_-Qc32DqHiJmLBLRln_BPqg_KMgf7aKa"
+var SUPABASE_URL='https://qolpaedhemyatuxikaiq.supabase.co';        // ex. https://abcdxyz.supabase.co
+var SUPABASE_ANON_KEY='sb_publishable_-Qc32DqHiJmLBLRln_BPqg_KMgf7aKa';   // clé "anon public"
 
 // Mode démonstration uniquement : compte administrateur créé au premier lancement
-var ADMIN_SEED={email:'adm@bookman.org',password:'adm123',name:'Administrateur'};
+var ADMIN_SEED={email:'admin@makandal.local',password:'admin123',name:'Administrateur'};
 
 var DB_KEY='makandal_db_v1', SES_KEY='makandal_session_v1', THEME_KEY='makandal-theme';
 var BUCKET='course-files';
@@ -373,9 +370,7 @@ function hashPw(p){var s='makandal::'+p,h1=0xdeadbeef,h2=0x41c6ce57,ch,i;
   h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
   h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
   return (4294967296*(2097151&h2)+(h1>>>0)).toString(16)}
-function axesList(){var a=getSettings().axes;return (a&&a.length)?a.slice():(DATA.axes||[]).slice()}
-function resolveAxis(n){var al=getSettings().axis_alias||{};var k=0;while(al.hasOwnProperty(n)&&k++<20)n=al[n];var l=axesList();return (l.indexOf(n)>=0||!l.length)?n:l[0]}
-function axisClass(a){var map={};axesList().forEach(function(x,i){map[x]=i%6});
+function axisClass(a){var map={'Cours de base':0,'Méthodologie':1,'Justice sociale':2,'Intervention sociale':3,'Protection sociale':4,'Théories sociologiques':5};
   return 'ax-'+(map.hasOwnProperty(a)?map[a]:'x')}
 function toast(msg,kind){var t=document.createElement('div');t.className='toast '+(kind==='ok'?'ok':kind==='ko'?'ko':'');t.textContent=msg;
   document.getElementById('toasts').appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(function(){t.remove()},300)},3600)}
@@ -406,8 +401,7 @@ function defaultSettings(){var m=DATA.programMeta||{};return {brand_name:'Makand
   hero_title:'Formation universitaire en *travail social*',hero_desc:m.desc||"Un cursus de licence organisé en cinq axes pédagogiques, de la théorie à l'intervention sur le terrain.",
   stat1_n:'4',stat1_l:"Années d'études",stat2_n:'5',stat2_l:"Axes d'intervention",stat3_n:'',stat3_l:'Cours & séminaires',
   obj_title:'Objectifs du programme',objectives:(m.objectifs||[]).slice(),cat_label:'Catalogue',cat_title:'Cours du programme',
-  primary:'#0284C7',accent:'#D97706',g1:'#082f49',g2:'#0f172a',g3:'#451a03',
-  program_title:'Programme de Travail social',logo:'',font_sans:'Plus Jakarta Sans',font_serif:'Cormorant Garamond',text_scale:'100',title_weight:'700',title_italic:'0',axes:null,axis_alias:{},hidden_courses:[]}}
+  primary:'#0284C7',accent:'#D97706',g1:'#082f49',g2:'#0f172a',g3:'#451a03'}}
 function getSettings(){return Object.assign(defaultSettings(),(state&&state.settings)||{})}
 function richTitle(t){return esc(t).replace(/\*([^*]+)\*/g,'<em>$1</em>')}
 function applyTheme(s){var el=document.getElementById('site-theme');if(!el){el=document.createElement('style');el.id='site-theme';document.head.appendChild(el)}
@@ -415,14 +409,6 @@ function applyTheme(s){var el=document.getElementById('site-theme');if(!el){el=d
   var p=ok(s.primary,'#0284C7'),a=ok(s.accent,'#D97706'),g1=ok(s.g1,'#082f49'),g2=ok(s.g2,'#0f172a'),g3=ok(s.g3,'#451a03');
   el.textContent=':root{--primary:'+p+';--ring:'+p+';--ochre:'+a+'}.dark{--primary:color-mix(in srgb,'+p+' 62%,#fff);--ring:color-mix(in srgb,'+p+' 62%,#fff);--ochre:color-mix(in srgb,'+a+' 75%,#fff)}'+
    '.hero,.banner,.sidebrand{background:linear-gradient(135deg,'+g1+','+g2+' 50%,'+g3+')}.hero h1 em{color:color-mix(in srgb,'+p+' 45%,#fff)}.stats3 .n,.eyebrow{color:color-mix(in srgb,'+a+' 55%,#fff)}';
-  var SANS=['Plus Jakarta Sans','Inter','Open Sans','Source Sans 3','Nunito','Poppins'],SERIF=['Cormorant Garamond','Playfair Display','Lora','EB Garamond','Crimson Pro'];
-  var fs=SANS.indexOf(s.font_sans)>=0?s.font_sans:(s.font_sans==='system'?'system':'Plus Jakarta Sans'),ff=SERIF.indexOf(s.font_serif)>=0?s.font_serif:(s.font_serif==='georgia'?'georgia':'Cormorant Garamond');
-  var fam=[];if(fs!=='system')fam.push(fs);if(ff!=='georgia')fam.push(ff);
-  var lk=document.getElementById('site-fonts');if(!lk){lk=document.createElement('link');lk.id='site-fonts';lk.rel='stylesheet';document.head.appendChild(lk)}
-  var href='https://fonts.googleapis.com/css2?'+fam.map(function(f){return 'family='+f.replace(/ /g,'+')+':wght@400;500;600;700'}).join('&')+'&display=swap';if(lk.getAttribute('href')!==href)lk.setAttribute('href',href);
-  var sc=Math.max(85,Math.min(130,parseInt(s.text_scale,10)||100))/100;var tw=['500','600','700'].indexOf(String(s.title_weight))>=0?s.title_weight:'700';
-  el.textContent+=':root{--font-sans:'+(fs==='system'?"-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif":"'"+fs+"',sans-serif")+';--font-serif:'+(ff==='georgia'?"Georgia,'Times New Roman',serif":"'"+ff+"',Georgia,serif")+'}'+
-   'body{zoom:'+sc+'}h1,h2,h3,.serif,.brand .t1{font-weight:'+tw+'!important}'+(String(s.title_italic)==='1'?'h1,h2{font-style:italic}':'');
   if(s.brand_name)document.title=s.brand_name+' · '+(s.brand_tag||'Programme de Travail social')}
 function modeBadge(m){return (m&&m!=='asynchrone')?' <span class="badge '+(m==='synchrone'?'ax-4':'ax-3')+'">'+(m==='synchrone'?'En direct':'Hybride')+'</span>':''}
 function roomHTML(base){var u=safeUrl(base.room_url);if(!u)return '';
@@ -435,7 +421,7 @@ function liveListHTML(list){if(!list||!list.length)return '';
    '<div class="row" style="align-items:center"><span class="tag '+st+'">'+({soon:'À venir',now:'Salle ouverte',past:'Terminé',none:''}[st])+'</span>'+(u?'<a class="btn'+(st==='now'?'':' outline')+' sm" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+ic('ext')+' Rejoindre</a>':'')+'</div></div></div>'}).join('')+'</div>'}
 function editExtra(c){
   var opt=function(list,cur){return list.map(function(o){return '<option value="'+esc(o)+'"'+(cur===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')};
-  return '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px"><select class="select" data-bind="year" aria-label="Année">'+opt(YEARS,c.year)+'</select><select class="select" data-bind="axis" aria-label="Axe">'+opt(axesList(),c.axis)+'</select>'+
+  return '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px"><select class="select" data-bind="year" aria-label="Année">'+opt(YEARS,c.year)+'</select><select class="select" data-bind="axis" aria-label="Axe">'+opt(DATA.axes||[],c.axis)+'</select>'+
    '<select class="select" data-bind="mode" aria-label="Modalité">'+['asynchrone','synchrone','hybride'].map(function(m){return '<option value="'+m+'"'+((c.mode||'asynchrone')===m?' selected':'')+'>'+MODE_LABELS[m]+'</option>'}).join('')+'</select></div>'+
    '<input class="input" data-bind="room_url" placeholder="Lien de la salle de classe virtuelle permanente (Zoom, Meet, Teams, Jitsi…)" value="'+esc(c.room_url||'')+'">'+
    '<input class="input" data-bind="room_note" placeholder="Note pour la salle (code d\'accès, consignes…)" value="'+esc(c.room_note||'')+'">'}
@@ -458,12 +444,12 @@ function loadDB(){
   if(!db)db={users:[],edits:{},progress:{},forum:[],subs:[],blocks:[],settings:null,custom:{}};
   db.blocks=db.blocks||[];db.custom=db.custom||{};
   if(!db.users.some(function(u){return u.email===ADMIN_SEED.email.toLowerCase()})){
-    db.users.unshift({id:uid(),email:ADMIN_SEED.email.toLowerCase(),name:ADMIN_SEED.name,role:'admin',course_codes:[],pw:hashPw(ADMIN_SEED.password),must_change:true,created_at:new Date().toISOString()});
+    db.users.unshift({id:uid(),email:ADMIN_SEED.email.toLowerCase(),name:ADMIN_SEED.name,role:'admin',course_codes:[],pw:hashPw(ADMIN_SEED.password),created_at:new Date().toISOString()});
     saveDB(db);
   }
   return db}
 function saveDB(db){mem=db;try{localStorage.setItem(DB_KEY,JSON.stringify(db))}catch(e){if(e&&/quota/i.test(e.name+e.message))throw new Error('Espace de stockage du navigateur plein (mode démonstration). Utilisez un fichier plus léger ou passez à Supabase.')}}
-function pub(u){return {id:u.id,email:u.email,name:u.name||'',role:u.role||'etudiant',course_codes:u.course_codes||[],must_change:!!u.must_change}}
+function pub(u){return {id:u.id,email:u.email,name:u.name||'',role:u.role||'etudiant',course_codes:u.course_codes||[]}}
 function pk(uidv,code){return uidv+'|'+code}
 
 var Local=(function(){
@@ -481,15 +467,11 @@ var Local=(function(){
     profiles:async function(){return D().users.map(pub)},
     invites:async function(){return []},
     saveProfile:async function(id,p){var u=D().users.find(function(x){return x.id===id});if(!u)throw new Error('Utilisateur introuvable');
-      if(p.name!=null)u.name=p.name;if(p.role)u.role=p.role;if(p.course_codes)u.course_codes=p.course_codes;if(p.password){u.pw=hashPw(p.password);u.must_change=true}saveDB(D())},
+      if(p.name!=null)u.name=p.name;if(p.role)u.role=p.role;if(p.course_codes)u.course_codes=p.course_codes;if(p.password)u.pw=hashPw(p.password);saveDB(D())},
     deleteProfile:async function(id){D().users=D().users.filter(function(x){return x.id!==id});saveDB(D())},
     invite:async function(o){var email=o.email.toLowerCase();if(D().users.some(function(u){return u.email===email}))throw new Error('Cet email existe déjà');
       if(!o.password)throw new Error('Un mot de passe est requis.');
-      D().users.push({id:uid(),email:email,name:o.name,role:o.role,course_codes:o.course_codes,pw:hashPw(o.password),must_change:true,created_at:new Date().toISOString()});saveDB(D())},
-    inviteMany:async function(rows){var made=0,skipped=[];rows.forEach(function(o){var email=o.email.toLowerCase();if(D().users.some(function(u){return u.email===email})){skipped.push(email);return}
-      D().users.push({id:uid(),email:email,name:o.name,role:o.role,course_codes:o.course_codes,pw:hashPw(o.password),must_change:true,created_at:new Date().toISOString()});made++});saveDB(D());return {made:made,skipped:skipped}},
-    changePassword:async function(oldp,newp){var u=cur();if(!u)throw new Error('Session expirée');if(oldp!=null&&u.pw!==hashPw(oldp))throw new Error('Mot de passe actuel incorrect');u.pw=hashPw(newp);u.must_change=false;saveDB(D())},
-    resetPassword:async function(){throw new Error("En mode démonstration, demandez à l'administrateur de réinitialiser votre mot de passe.")},
+      D().users.push({id:uid(),email:email,name:o.name,role:o.role,course_codes:o.course_codes,pw:hashPw(o.password),created_at:new Date().toISOString()});saveDB(D())},
     deleteInvite:async function(){},
     edits:async function(){return clone(D().edits)},
     saveEdit:async function(code,data){D().edits[code]=data;saveDB(D())},
@@ -516,22 +498,13 @@ var Local=(function(){
     addForum:async function(code,text){var u=cur();D().forum.push({id:uid(),code:code,user_id:u.id,author_name:u.name,role:u.role,text:text,created_at:new Date().toISOString()});saveDB(D())},
     subs:async function(code){var u=cur();var ed=u.role==='admin'||(u.role==='enseignant'&&(u.course_codes||[]).indexOf(code)>=0);
       return D().subs.filter(function(s){return s.code===code&&(ed||s.user_id===u.id)}).sort(function(a,b){return a.created_at<b.created_at?1:-1})},
-    addSub:async function(code,text,file){var u=cur();var row={id:uid(),code:code,user_id:u.id,student_name:u.name,text:text,grade:null,feedback:'',created_at:new Date().toISOString()};
-      if(file){if(file.size>MAX_FILE)throw new Error('Fichier trop lourd en mode démonstration (max 1,5 Mo).');row.file_data=await readDataUrl(file);row.file_name=file.name}D().subs.push(row);saveDB(D())},
-    subFileUrls:async function(subs){var m={};subs.forEach(function(b){if(b.file_name&&b.file_data)m[b.id]=b.file_data});return m},
-    grade:async function(id,grade,fb){var s=D().subs.find(function(x){return x.id===id});if(!s)throw new Error('Soumission introuvable');s.grade=grade;s.feedback=fb;saveDB(D())},
-    releve:async function(sid){var g=D().grades||{};var out=[];Object.keys(g).forEach(function(k){if(g[k].student_id===sid)out.push(clone(g[k]))});return {grades:out,weights:clone(D().weights||{})}},
-    exportAll:async function(){var db=D();return {app:'makandal',version:1,exported_at:new Date().toISOString(),mode:'local',settings:db.settings||{},course_edits:db.edits||{},custom_courses:db.custom||{},profiles:db.users.map(pub),blocks:db.blocks.map(function(b){var c=Object.assign({},b);delete c.file_data;return c}),forum_posts:db.forum,submissions:db.subs.map(function(b){var c=Object.assign({},b);delete c.file_data;return c}),progress:db.progress,grades:Object.keys(db.grades||{}).map(function(k){return db.grades[k]}),grade_weights:db.weights||{}}},
-    roster:async function(code){return D().users.filter(function(u){return u.role==='etudiant'&&(u.course_codes||[]).indexOf(code)>=0}).map(pub)},
-    grades:async function(code){var u=cur();var g=D().grades||{};var out=[];Object.keys(g).forEach(function(k){var r=g[k];if(r.course_code!==code)return;if(u.role==='etudiant'&&r.student_id!==u.id)return;out.push(clone(r))});return out},
-    weights:async function(code){return Object.assign({intra:30,tp:30,final:40},(D().weights||{})[code]||{})},
-    saveGrades:async function(code,rows,w){var db=D();db.grades=db.grades||{};db.weights=db.weights||{};db.weights[code]=w;
-      rows.forEach(function(r){db.grades[r.student_id+'|'+code]={course_code:code,student_id:r.student_id,intra:r.intra,tp:r.tp,final:r.final}});saveDB(db)}
+    addSub:async function(code,text){var u=cur();D().subs.push({id:uid(),code:code,user_id:u.id,student_name:u.name,text:text,grade:null,feedback:'',created_at:new Date().toISOString()});saveDB(D())},
+    grade:async function(id,grade,fb){var s=D().subs.find(function(x){return x.id===id});if(!s)throw new Error('Soumission introuvable');s.grade=grade;s.feedback=fb;saveDB(D())}
   }})();
 
 /* ================= Couche données : Supabase (mode en ligne) ================= */
 var Cloud=(function(){
-  var sb=null;function C(){if(!sb)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{flowType:'pkce'}});return sb}
+  var sb=null;function C(){if(!sb)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return sb}
   async function q(p){var r=await p;if(r.error)throw new Error(r.error.message||'Erreur serveur');return r.data}
   async function profileOf(authUser){if(!authUser)return null;
     var d=await q(C().from('profiles').select('*').eq('id',authUser.id).maybeSingle());return d?pub(d):null}
@@ -540,7 +513,7 @@ var Cloud=(function(){
     mode:'cloud',
     init:async function(){var r=await C().auth.getSession();if(!r.data||!r.data.session)return null;return profileOf(r.data.session.user)},
     login:async function(email,pw){var r=await C().auth.signInWithPassword({email:email,password:pw});
-      if(r.error){if(/confirm/i.test(r.error.message))throw new Error("Veuillez d'abord confirmer votre adresse email (lien envoyé par courriel).");throw new Error('Email ou mot de passe incorrect')}
+      if(r.error){if(/confirm/i.test(r.error.message))throw new Error("Veuillez d'abord confirmer votre adresse email (lien envoyé par courriel).");throw new Error('Supabase a répondu : « '+r.error.message+' » — projet : '+String(SUPABASE_URL).replace(/^https?:\/\//,''))}
       var p=await profileOf(r.data.user);if(!p){await C().auth.signOut();throw new Error("Ce compte n'a pas de profil actif. Contactez l'administrateur.")}return p},
     signup:async function(name,email,pw){var r=await C().auth.signUp({email:email,password:pw,options:{data:{name:name}}});
       if(r.error)throw new Error(r.error.message);
@@ -555,15 +528,6 @@ var Cloud=(function(){
       var ex=await q(C().from('profiles').select('id').eq('email',email).maybeSingle());if(ex)throw new Error('Cet email a déjà un compte : modifiez-le dans la liste.');
       await q(C().from('invitations').upsert({email:email,name:o.name,role:o.role,course_codes:o.course_codes},{onConflict:'email'}))},
     deleteInvite:async function(email){await q(C().from('invitations').delete().eq('email',email))},
-    inviteMany:async function(rows){var emails=rows.map(function(r){return r.email.toLowerCase()});
-      var ex=await q(C().from('profiles').select('email').in('email',emails));var have={};ex.forEach(function(x){have[x.email]=1});
-      var fresh=rows.filter(function(r){return !have[r.email.toLowerCase()]});
-      if(fresh.length)await q(C().from('invitations').upsert(fresh.map(function(r){return {email:r.email.toLowerCase(),name:r.name,role:r.role,course_codes:r.course_codes}}),{onConflict:'email'}));
-      return {made:fresh.length,skipped:rows.filter(function(r){return have[r.email.toLowerCase()]}).map(function(r){return r.email})}},
-    changePassword:async function(oldp,newp){var me=state.user;if(oldp!=null){var r=await C().auth.signInWithPassword({email:me.email,password:oldp});if(r.error)throw new Error('Mot de passe actuel incorrect')}
-      var u=await C().auth.updateUser({password:newp});if(u.error)throw new Error(u.error.message)},
-    resetPassword:async function(email){var r=await C().auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(r.error)throw new Error(r.error.message)},
-    onRecovery:function(cb){C().auth.onAuthStateChange(function(ev){if(ev==='PASSWORD_RECOVERY')cb()})},
     edits:async function(){var rows=await q(C().from('course_edits').select('*'));var m={};rows.forEach(function(r){m[r.code]=r.data});return m},
     saveEdit:async function(code,data){await q(C().from('course_edits').upsert({code:code,data:data,updated_at:new Date().toISOString()},{onConflict:'code'}))},
     settings:async function(){var d=await q(C().from('site_settings').select('data').eq('id',1).maybeSingle());return d?d.data:null},
@@ -599,24 +563,8 @@ var Cloud=(function(){
     forum:async function(code){return await q(C().from('forum_posts').select('*').eq('course_code',code).order('created_at',{ascending:false}))},
     addForum:async function(code,text){var me=state.user;await q(C().from('forum_posts').insert({course_code:code,author_name:me.name,role:me.role,text:text}))},
     subs:async function(code){return await q(C().from('submissions').select('*').eq('course_code',code).order('created_at',{ascending:false}))},
-    addSub:async function(code,text,file){var me=state.user;var row={course_code:code,student_name:me.name,text:text};
-      if(file){var uidv=await uidNow();var path=code+'/sub/'+uidv+'/'+uid()+'-'+safeName(file.name);
-        var up=await C().storage.from(BUCKET).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});
-        if(up.error)throw new Error("Échec de l'envoi du fichier : "+up.error.message);row.file_path=path;row.file_name=file.name}
-      await q(C().from('submissions').insert(row))},
-    subFileUrls:async function(subs){var m={};var w=subs.filter(function(b){return b.file_path});if(!w.length)return m;
-      var r=await C().storage.from(BUCKET).createSignedUrls(w.map(function(b){return b.file_path}),3600);if(r.error||!r.data)return m;
-      r.data.forEach(function(x){if(x.signedUrl){w.forEach(function(b){if(b.file_path===x.path)m[b.id]=x.signedUrl})}});return m},
-    grade:async function(id,grade,fb){await q(C().from('submissions').update({grade:grade,feedback:fb}).eq('id',id))},
-    releve:async function(sid){var g=await q(C().from('grades').select('*').eq('student_id',sid));var w=await q(C().from('grade_weights').select('*'));var wm={};w.forEach(function(x){wm[x.course_code]={intra:+x.intra,tp:+x.tp,final:+x.final}});return {grades:g,weights:wm}},
-    exportAll:async function(){async function all(t){var out=[],i=0;for(;;){var d=await q(C().from(t).select('*').range(i,i+999));out=out.concat(d);if(d.length<1000)break;i+=1000}return out}
-      var o={app:'makandal',version:1,exported_at:new Date().toISOString(),mode:'cloud'};var tabs=['profiles','invitations','course_edits','custom_courses','site_settings','blocks','progress','forum_posts','submissions','grades','grade_weights'];
-      for(var k=0;k<tabs.length;k++){o[tabs[k]]=await all(tabs[k])}return o},
-    roster:async function(code){return (await q(C().from('profiles').select('*').eq('role','etudiant').contains('course_codes',[code]).order('name',{ascending:true}))).map(pub)},
-    grades:async function(code){return await q(C().from('grades').select('*').eq('course_code',code))},
-    weights:async function(code){var d=await q(C().from('grade_weights').select('*').eq('course_code',code).maybeSingle());return d?{intra:+d.intra,tp:+d.tp,final:+d.final}:{intra:30,tp:30,final:40}},
-    saveGrades:async function(code,rows,w){await q(C().from('grade_weights').upsert({course_code:code,intra:w.intra,tp:w.tp,final:w.final},{onConflict:'course_code'}));
-      if(rows.length)await q(C().from('grades').upsert(rows.map(function(r){return {course_code:code,student_id:r.student_id,intra:r.intra,tp:r.tp,final:r.final,updated_at:new Date().toISOString()}}),{onConflict:'course_code,student_id'}))}
+    addSub:async function(code,text){var me=state.user;await q(C().from('submissions').insert({course_code:code,student_name:me.name,text:text}))},
+    grade:async function(id,grade,fb){await q(C().from('submissions').update({grade:grade,feedback:fb}).eq('id',id))}
   }})();
 
 var S=CLOUD&&CLOUD_LIB_OK?Cloud:Local;
@@ -624,8 +572,8 @@ var S=CLOUD&&CLOUD_LIB_OK?Cloud:Local;
 /* ================= État ================= */
 var state={user:null,edits:{},settings:null,custom:{},ready:false};
 var ui={year:'Toutes',axis:'Tous les axes',q:'',tab:'seances',editing:false,draft:null,adminQ:'',adminRole:'tous',adminTab:'users',settingsDraft:null,courseDlg:null,dialog:null,blockDlg:null,authMode:'login',authMsg:'',open:{},ctx:{},lastRoute:''};
-function allCourses(){var hid=getSettings().hidden_courses||[];var base=DATA.courses.filter(function(c){return hid.indexOf(c.code)<0}).map(function(c){return Object.assign({},c,state.edits[c.code]||{})});
-  var cu=Object.keys(state.custom||{}).map(function(k){return Object.assign({code:k,seances:[],objectifs:[]},state.custom[k],state.edits[k]||{})});return base.concat(cu).map(function(c){c.axis=resolveAxis(c.axis);return c})}
+function allCourses(){var base=DATA.courses.map(function(c){return Object.assign({},c,state.edits[c.code]||{})});
+  var cu=Object.keys(state.custom||{}).map(function(k){return Object.assign({code:k,seances:[],objectifs:[]},state.custom[k],state.edits[k]||{})});return base.concat(cu)}
 function getCourse(code){var c=allCourses().find(function(x){return x.code===code});return c?clone(c):null}
 async function loadShared(){try{state.edits=await S.edits()}catch(e){state.edits={}}try{state.custom=await S.customCourses()}catch(e){state.custom={}}}
 async function loadSettings(){try{state.settings=await S.settings()}catch(e){state.settings=null}}
@@ -636,8 +584,6 @@ function route(){var h=(location.hash||'#/').replace(/^#/,'')||'/';var p=h.split
   if(p==='/login')return{name:'login'};
   if(p==='/tableau-de-bord')return{name:'dash'};
   if(p==='/admin')return{name:'admin'};
-  if(p==='/mot-de-passe')return{name:'pw'};
-  var mr=p.match(/^\/releve(?:\/(.+))?$/);if(mr)return{name:'releve',id:mr[1]?decodeURIComponent(mr[1]):null};
   var m=p.match(/^\/cours\/(.+)$/);if(m)return{name:'course',code:decodeURIComponent(m[1])};
   return{name:'redirect',to:'#/'}}
 function go(h){if(location.hash===h)render();else location.hash=h}
@@ -647,12 +593,11 @@ function navbar(user){
   var cs=getSettings();var theme=document.documentElement.classList.contains('dark')?'dark':'light';
   var h=(S.mode==='local'?'<div class="bar-demo">Mode démonstration : les données restent dans ce navigateur. Configurez Supabase (voir le guide) pour une plateforme partagée en ligne.</div>':'')+
    '<header class="top"><div class="wrap in">'+
-   '<a href="#/" class="brand">'+(cs.logo?'<img class="logoimg" alt="" src="'+esc(cs.logo)+'">':'<span class="logo">'+ic('grad','s5')+'</span>')+'<span><span class="t1">'+esc(cs.brand_name)+'</span><span class="t2">'+esc(cs.brand_tag)+'</span></span></a>'+
+   '<a href="#/" class="brand"><span class="logo">'+ic('grad','s5')+'</span><span><span class="t1">'+esc(cs.brand_name)+'</span><span class="t2">'+esc(cs.brand_tag)+'</span></span></a>'+
    '<div class="actions"><button class="iconbtn" data-act="theme" aria-label="Basculer le thème">'+(theme==='dark'?ic('sun'):ic('moon'))+'</button>';
   if(user){
     if(user.role==='admin')h+='<a class="btn outline sm hide-sm-flex" href="#/admin">'+ic('shield')+' Admin</a>';
     h+='<a class="btn outline sm" href="#/tableau-de-bord">'+ic('dash')+' <span class="hide-sm">Mon espace</span></a>'+
-      '<a class="btn ghost sm hide-sm-flex" href="#/mot-de-passe">Mot de passe</a>'+
       '<div class="whoami"><b>'+esc(user.name||user.email)+'</b><span>'+ROLE_LABELS[user.role]+'</span></div>'+
       '<button class="iconbtn danger" data-act="logout" aria-label="Déconnexion">'+ic('logout')+'</button>';
   }else h+='<a class="btn sm" href="#/login">Connexion</a>';
@@ -677,7 +622,7 @@ function gridHTML(){var f=filteredCourses();
    (f.length?'':'<p class="mt10 ta-c muted">Aucun cours ne correspond à votre recherche.</p>')}
 
 function viewHome(user){
-  var cs=getSettings();var axes=axesList();var courses=user?allCourses():[];
+  var cs=getSettings();var axes=DATA.axes||[];var courses=user?allCourses():[];
   var present=YEARS.filter(function(y){return courses.some(function(c){return c.year===y})});
   var icons=['scale','heart','book','shield'];
   var h='<div class="pb"><section class="wrap pt8"><div class="hero"><div class="z fade">'+
@@ -705,7 +650,7 @@ function viewHome(user){
 function viewLogin(){
   var su=ui.authMode==='signup'&&S.mode==='cloud';
   return '<div class="loginwrap"><div class="sidebrand"><div style="position:relative;z-index:1"><span class="eyebrow">'+ic('grad')+' Portail universitaire</span></div>'+
-   '<div style="position:relative;z-index:1;max-width:28rem"><h1>'+esc(getSettings().program_title)+'</h1><p>Accédez à vos cours, séances, ressources et travaux. Plateforme pédagogique de la Faculté des sciences humaines et sociales.</p></div>'+
+   '<div style="position:relative;z-index:1;max-width:28rem"><h1>Programme de Travail social</h1><p>Accédez à vos cours, séances, ressources et travaux. Plateforme pédagogique de la Faculté des sciences humaines et sociales.</p></div>'+
    '<div style="position:relative;z-index:1;font-size:14px;color:#94a3b8">Makandal · Licence en travail social</div>'+
    '<div class="blob" style="right:-96px;bottom:-96px;width:384px;height:384px"></div></div>'+
    '<div class="formside"><form class="form fade" id="login-form"><div><h2>'+(su?'Créer un compte':'Connexion')+'</h2><p class="muted sm" style="margin-top:4px">'+(su?'Utilisez l\'adresse email indiquée à l\'administrateur.':'Entrez vos identifiants pour continuer.')+'</p></div>'+
@@ -715,14 +660,13 @@ function viewLogin(){
    '<div class="field"><label class="lbl" for="email">Adresse email</label><input class="input" id="email" type="email" required placeholder="vous@exemple.com" autocomplete="username"></div>'+
    '<div class="field"><label class="lbl" for="password">Mot de passe</label><input class="input" id="password" type="password" required minlength="'+(su?6:1)+'" placeholder="••••••••" autocomplete="'+(su?'new-password':'current-password')+'"></div>'+
    '<button class="btn full" type="submit" id="login-btn">'+(su?'Créer mon compte':'Se connecter')+'</button>'+
-   (su?'':'<p class="footnote" style="margin-top:-4px"><a href="#" data-act="pw-forgot" style="text-decoration:underline">Mot de passe oublié ?</a></p>')+
    '<p class="footnote">'+(su?'Après inscription, l\'administrateur vous assigne vos cours.':'Pas de compte ? '+(S.mode==='cloud'?'Utilisez l\'onglet « Inscription » ou contactez':'Contactez')+' l\'administrateur du programme.')+'</p></form></div></div>'}
 
 function viewDash(user,ctx){
   var courses=allCourses();var my=user.role==='admin'?courses:courses.filter(function(c){return (user.course_codes||[]).indexOf(c.code)>=0});
   var msg={admin:"Vous avez accès à l'ensemble du programme et à la gestion des utilisateurs.",enseignant:'Voici les cours qui vous sont assignés. Vous pouvez en modifier le contenu.',etudiant:'Voici vos cours inscrits. Suivez votre progression et rendez vos devoirs.'}[user.role];
   return '<div class="wrap py10"><div class="banner"><span class="eyebrow">'+ROLE_LABELS[user.role]+'</span><h1>Bonjour, '+esc(user.name||user.email)+'</h1><p>'+esc(msg)+'</p>'+
-   (user.role==='admin'?'<a class="go" href="#/admin">'+ic('shield')+" Console d'administration "+ic('right')+'</a>':'')+(user.role==='etudiant'?'<a class="go" href="#/releve">'+ic('book')+' Mon relevé de notes '+ic('right')+'</a>':'')+'</div>'+
+   (user.role==='admin'?'<a class="go" href="#/admin">'+ic('shield')+" Console d'administration "+ic('right')+'</a>':'')+'</div>'+
    liveListHTML((ctx||{}).live)+'<h2 class="h2i">'+ic('book','s6')+' '+(user.role==='admin'?'Tous les cours':'Mes cours')+' ('+my.length+')</h2>'+
    (my.length===0?'<div class="empty" style="margin-top:24px;padding:40px">'+ic('grad','s10')+'<p>Aucun cours ne vous est encore assigné. Contactez l\'administrateur.</p></div>'
     :'<div class="grid g3 mt6">'+my.map(function(c){return courseCard(c,false,user)}).join('')+'</div>')+'</div>'}
@@ -791,7 +735,7 @@ function viewCourse(user,code,ctx){
   if(isStu&&!ui.editing&&total>0)h+='<div class="mt6"><div class="sp sm" style="margin-bottom:6px"><span style="font-weight:500">Ma progression</span><span class="muted" id="prog-label">'+pct+'% · '+completed.length+'/'+total+' séances</span></div><div class="progress"><i style="width:'+pct+'%"></i></div></div>';
   h+='</div>';
   if((base.objectifs||[]).length&&!ui.editing)h+='<div class="paper objbox"><h2>Objectifs d\'apprentissage</h2><ul>'+base.objectifs.map(function(o){return '<li>'+ic('check')+' <span>'+esc(o)+'</span></li>'}).join('')+'</ul></div>';
-  h+='<div class="tabs"><div class="tablist">'+[['seances','Séances'],['live','En direct'],['devoir','Devoir'],['forum','Forum']].concat(edit?[['notes','Notes']]:(isStu?[['notes','Mes notes']]:[])).map(function(t){return '<button class="tabbtn'+(ui.tab===t[0]?' on':'')+'" data-act="tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
+  h+='<div class="tabs"><div class="tablist">'+[['seances','Séances'],['live','En direct'],['devoir','Devoir'],['forum','Forum']].map(function(t){return '<button class="tabbtn'+(ui.tab===t[0]?' on':'')+'" data-act="tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
   // Séances
   h+='<div class="pane" data-pane="seances"'+(ui.tab==='seances'?'':' hidden')+'>';
   if(ui.editing){
@@ -812,11 +756,10 @@ function viewCourse(user,code,ctx){
   if(d)h+='<div class="paper" style="padding:24px"><h3 class="serif" style="font-size:20px;font-weight:600">'+esc(d.titre)+'</h3><p class="sm muted" style="margin-top:8px;line-height:1.7">'+esc(d.desc)+'</p><div class="row xs muted" style="margin-top:12px;gap:16px">'+(d.echeance?'<span>Échéance : '+esc(d.echeance)+'</span>':'')+(d.ponderation?'<span>Pondération : '+esc(d.ponderation)+'</span>':'')+(d.format?'<span>Format : '+esc(d.format)+'</span>':'')+'</div></div>';
   var seanceDevoirs=(ctx.blocks||[]).filter(function(b){return b.kind==='devoir'});
   if(seanceDevoirs.length)h+='<div class="stack"><h4 class="sec-title">Devoirs par séance ('+seanceDevoirs.length+')</h4>'+seanceDevoirs.map(function(b){return '<div class="mono xs muted" style="margin-bottom:-6px">Séance '+esc(b.seance_num)+'</div>'+blockHTML(b,null,false)}).join('')+'</div>';
-  if(isStu)h+='<div class="card box20"><h4 style="font-weight:600">Soumettre mon devoir</h4><textarea id="sub-text" class="textarea mt3" rows="4" placeholder="Rédigez ou collez votre travail ici… (facultatif si vous joignez un fichier)"></textarea><label class="lbl mt3" style="display:block">Joindre un fichier (PDF, Word, image…) <span class="muted xs">— max '+(CLOUD?'25':'1,5')+' Mo</span></label><input type="file" id="sub-file" class="input" style="padding-top:6px"><button class="btn mt3" data-act="sub-send">'+ic('send')+' Soumettre</button></div>';
+  if(isStu)h+='<div class="card box20"><h4 style="font-weight:600">Soumettre mon devoir</h4><textarea id="sub-text" class="textarea mt3" rows="4" placeholder="Rédigez ou collez votre travail ici…"></textarea><button class="btn mt3" data-act="sub-send">'+ic('send')+' Soumettre</button></div>';
   h+='<div class="stack"><h4 class="sec-title">'+(edit?'Soumissions des étudiants':'Mes soumissions')+' ('+subs.length+')</h4>'+
-   subs.map(function(s){return '<div class="box"><div class="sp"><span class="sm" style="font-weight:500">'+esc(s.student_name)+'</span>'+(s.grade?'<span class="grade">'+esc(s.grade)+'</span>':'<span class="xs muted">Non noté</span>')+'</div>'+(s.text?'<p class="sm muted" style="margin-top:8px;white-space:pre-wrap">'+esc(s.text)+'</p>':'')+(s.file_name&&(ctx.subUrls||{})[s.id]?'<p class="sm" style="margin-top:8px">'+ic('ext')+' <a href="'+esc(ctx.subUrls[s.id])+'" target="_blank" rel="noopener" download="'+esc(s.file_name)+'" style="text-decoration:underline">'+esc(s.file_name)+'</a></p>':'')+(s.feedback?'<p class="retour">Retour : '+esc(s.feedback)+'</p>':'')+(edit?'<button class="btn outline sm mt3" data-act="grade" data-id="'+esc(s.id)+'">Noter</button>':'')+'</div>'}).join('')+
+   subs.map(function(s){return '<div class="box"><div class="sp"><span class="sm" style="font-weight:500">'+esc(s.student_name)+'</span>'+(s.grade?'<span class="grade">'+esc(s.grade)+'</span>':'<span class="xs muted">Non noté</span>')+'</div><p class="sm muted" style="margin-top:8px;white-space:pre-wrap">'+esc(s.text)+'</p>'+(s.feedback?'<p class="retour">Retour : '+esc(s.feedback)+'</p>':'')+(edit?'<button class="btn outline sm mt3" data-act="grade" data-id="'+esc(s.id)+'">Noter</button>':'')+'</div>'}).join('')+
    (subs.length===0?'<p class="sm muted">Aucune soumission pour le moment.</p>':'')+'</div></div></div>';
-  h+=gradesPane(user,base,ctx,edit,isStu);
   // Forum
   var posts=ctx.posts||[];
   h+='<div class="pane" data-pane="forum"'+(ui.tab==='forum'?'':' hidden')+'><div class="stack4"><div class="card box20"><div class="row" style="flex-wrap:nowrap"><input id="forum-input" class="input" placeholder="Posez une question ou partagez une idée…"><button class="btn" data-act="forum-post" style="flex-shrink:0">'+ic('send')+'</button></div></div><div class="stack">'+
@@ -833,34 +776,25 @@ function usersTable(){var f=usersFiltered();
   return '<table><thead><tr><th>Nom</th><th class="hide-sm-cell">Email</th><th>Rôle</th><th class="hide-md">Cours assignés</th><th class="r">Actions</th></tr></thead><tbody>'+
    f.map(function(u){var rb=u.role==='admin'?'rb-admin':u.role==='enseignant'?'rb-ens':'rb-etu';
     return '<tr><td style="font-weight:500">'+esc(u.name||'—')+(u.pending?'<span class="pending">En attente</span>':'')+'</td><td class="hide-sm-cell muted">'+esc(u.email)+'</td><td><span class="rolebadge '+rb+'">'+ROLE_LABELS[u.role]+'</span></td><td class="hide-md muted">'+(u.role==='admin'?'Tous':(u.course_codes||[]).length)+'</td>'+
-     '<td><div class="acts">'+(u.pending||u.role!=='etudiant'?'':'<a class="btn ghost sm" href="#/releve/'+encodeURIComponent(u.id)+'">Relevé</a>')+(u.pending?'':'<button class="btn ghost icon" data-act="user-edit" data-id="'+esc(u.id)+'">'+ic('pencil')+'</button>')+(u.role!=='admin'||u.pending?'<button class="btn ghost icon" style="color:var(--destructive)" data-act="'+(u.pending?'inv-del':'user-del')+'" data-id="'+esc(u.pending?u.email:u.id)+'">'+ic('trash')+'</button>':'')+'</div></td></tr>'}).join('')+'</tbody></table>'+
+     '<td><div class="acts">'+(u.pending?'':'<button class="btn ghost icon" data-act="user-edit" data-id="'+esc(u.id)+'">'+ic('pencil')+'</button>')+(u.role!=='admin'||u.pending?'<button class="btn ghost icon" style="color:var(--destructive)" data-act="'+(u.pending?'inv-del':'user-del')+'" data-id="'+esc(u.pending?u.email:u.id)+'">'+ic('trash')+'</button>':'')+'</div></td></tr>'}).join('')+'</tbody></table>'+
    (f.length===0?'<p class="ta-c muted" style="padding:32px">Aucun utilisateur.</p>':'')}
 function coursesTable(){
   var rows=allCourses().sort(function(a,b){return (YEARS.indexOf(a.year)-YEARS.indexOf(b.year))||String(a.code).localeCompare(String(b.code))});
-  return '<table><thead><tr><th>Code</th><th>Titre</th><th class="hide-sm-cell">Année</th><th class="hide-md">Axe</th><th class="hide-md">Modalité</th><th class="r">Actions</th></tr></thead><tbody>'+
-   rows.map(function(c){return '<tr><td class="mono xs">'+esc(c.code)+'</td><td style="font-weight:500">'+esc(c.title)+(c.custom?' <span class="pending">Nouveau</span>':'')+'</td><td class="hide-sm-cell"><select class="select sel-sm" data-ce="year" data-code="'+esc(c.code)+'">'+YEARS.map(function(y){return '<option'+(y===c.year?' selected':'')+'>'+esc(y)+'</option>'}).join('')+'</select></td><td class="hide-md"><select class="select sel-sm" data-ce="axis" data-code="'+esc(c.code)+'">'+axesList().map(function(a){return '<option'+(a===c.axis?' selected':'')+'>'+esc(a)+'</option>'}).join('')+'</select></td><td class="hide-md muted">'+esc(MODE_LABELS[c.mode||'asynchrone'])+'</td>'+
-    '<td><div class="acts"><a class="btn ghost icon" href="#/cours/'+encodeURIComponent(c.code)+'" aria-label="Ouvrir">'+ic('ext')+'</a>'+'<button class="btn ghost icon" style="color:var(--destructive)" data-act="'+(c.custom?'course-del':'course-hide')+'" data-code="'+esc(c.code)+'" aria-label="Supprimer">'+ic('trash')+'</button>'+'</div></td></tr>'}).join('')+'</tbody></table>'}
+  return '<table><thead><tr><th>Code</th><th>Titre</th><th class="hide-sm-cell">Année</th><th class="hide-md">Modalité</th><th class="r">Actions</th></tr></thead><tbody>'+
+   rows.map(function(c){return '<tr><td class="mono xs">'+esc(c.code)+'</td><td style="font-weight:500">'+esc(c.title)+(c.custom?' <span class="pending">Nouveau</span>':'')+'</td><td class="hide-sm-cell muted">'+esc(c.year)+'</td><td class="hide-md muted">'+esc(MODE_LABELS[c.mode||'asynchrone'])+'</td>'+
+    '<td><div class="acts"><a class="btn ghost icon" href="#/cours/'+encodeURIComponent(c.code)+'" aria-label="Ouvrir">'+ic('ext')+'</a>'+(c.custom?'<button class="btn ghost icon" style="color:var(--destructive)" data-act="course-del" data-code="'+esc(c.code)+'" aria-label="Supprimer">'+ic('trash')+'</button>':'')+'</div></td></tr>'}).join('')+'</tbody></table>'}
 function initSettingsDraft(){var d=clone(getSettings());d.objectives_text=(d.objectives||[]).join('\n');ui.settingsDraft=d}
 function sField(label,key,o){o=o||{};var v=ui.settingsDraft[key];var hint=o.hint?'<span class="hint">'+o.hint+'</span>':'';
   if(o.color)return '<label class="colorf"><input type="color" data-s="'+key+'" value="'+esc(v)+'"><span style="flex:1;font-size:14px">'+label+'</span><code class="mono xs muted">'+esc(v)+'</code></label>';
   if(o.area)return '<div class="field"><label class="lbl">'+label+'</label><textarea class="textarea" rows="'+(o.rows||3)+'" data-s="'+key+'">'+esc(v)+'</textarea>'+hint+'</div>';
   return '<div class="field"><label class="lbl">'+label+'</label><input class="input" data-s="'+key+'" value="'+esc(v)+'">'+hint+'</div>'}
-function selS(key,opts){var v=String(ui.settingsDraft[key]);return '<select class="select" data-s="'+key+'">'+opts.map(function(o){return '<option value="'+o[0]+'"'+(v===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>'}
 function siteForm(){
-  return '<div class="stack6 mt6"><div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Identité</h3><div class="grid fg2 mt3" style="gap:12px">'+sField('Nom de la plateforme','brand_name')+sField('Nom du programme (sous-titre)','brand_tag')+'</div></div>'+
+  return '<div class="stack6 mt6"><div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Identité</h3><div class="grid fg2 mt3" style="gap:12px">'+sField('Nom de la plateforme','brand_name')+sField('Sous-titre','brand_tag')+'</div></div>'+
    '<div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Bandeau d\'accueil</h3><div class="stack4 mt3">'+sField('Petite ligne au-dessus du titre','eyebrow')+
    sField('Titre principal','hero_title',{hint:'Entourez de *astérisques* le passage à mettre en couleur.'})+sField('Texte de présentation','hero_desc',{area:1,rows:4})+
    '<div class="grid fg3" style="gap:12px">'+[1,2,3].map(function(i){return '<div class="stack" style="gap:8px">'+sField('Chiffre '+i,'stat'+i+'_n',i===3?{hint:'Vide = nombre de cours automatique.'}:{})+sField('Légende '+i,'stat'+i+'_l')+'</div>'}).join('')+'</div></div></div>'+
    '<div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Objectifs et catalogue</h3><div class="stack4 mt3">'+sField('Titre de la section des objectifs','obj_title')+sField('Objectifs','objectives_text',{area:1,rows:6,hint:'Un objectif par ligne.'})+
    '<div class="grid fg2" style="gap:12px">'+sField('Étiquette du catalogue','cat_label')+sField('Titre du catalogue','cat_title')+'</div></div></div>'+
-   '<div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Logo</h3><div class="row mt3" style="align-items:center;gap:14px">'+(ui.settingsDraft.logo?'<img class="logoimg" style="height:56px;max-width:200px" src="'+esc(ui.settingsDraft.logo)+'" alt="Logo">':'<span class="muted sm">Aucun logo (icône par défaut).</span>')+
-   '<label class="btn outline sm" style="cursor:pointer">Choisir une image<input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" data-logo="1" hidden></label>'+(ui.settingsDraft.logo?'<button class="btn ghost sm" style="color:var(--destructive)" data-act="logo-clear">Retirer le logo</button>':'')+'</div><p class="hint mt2">PNG, JPG, SVG ou WebP — réduit automatiquement. Cliquez sur « Enregistrer » pour appliquer.</p></div>'+
-   '<div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Titre du programme et typographie</h3><div class="stack4 mt3">'+sField('Titre du programme (page de connexion)','program_title')+
-   '<div class="grid fg2" style="gap:12px"><div class="field"><label class="lbl">Police du texte</label>'+selS('font_sans',[['Plus Jakarta Sans','Plus Jakarta Sans'],['Inter','Inter'],['Open Sans','Open Sans'],['Source Sans 3','Source Sans 3'],['Nunito','Nunito'],['Poppins','Poppins'],['system','Police du système']])+'</div>'+
-   '<div class="field"><label class="lbl">Police des titres</label>'+selS('font_serif',[['Cormorant Garamond','Cormorant Garamond'],['Playfair Display','Playfair Display'],['Lora','Lora'],['EB Garamond','EB Garamond'],['Crimson Pro','Crimson Pro'],['georgia','Georgia (système)']])+'</div>'+
-   '<div class="field"><label class="lbl">Taille du texte</label>'+selS('text_scale',[['90','Petite (90 %)'],['100','Normale (100 %)'],['110','Grande (110 %)'],['120','Très grande (120 %)']])+'</div>'+
-   '<div class="field"><label class="lbl">Graisse des titres</label>'+selS('title_weight',[['500','Moyenne'],['600','Semi-grasse'],['700','Grasse']])+'</div>'+
-   '<div class="field"><label class="lbl">Titres en italique</label>'+selS('title_italic',[['0','Non'],['1','Oui']])+'</div></div></div></div>'+
    '<div class="paper" style="padding:20px"><h3 class="serif" style="font-size:20px;font-weight:600">Couleurs</h3><p class="hint mt2">L\'aperçu est immédiat ; cliquez sur « Enregistrer » pour conserver.</p><div class="grid fg2 mt3" style="gap:12px">'+
    sField('Couleur principale','primary',{color:1})+sField('Couleur d\'accent','accent',{color:1})+sField('Bandeau — départ du dégradé','g1',{color:1})+sField('Bandeau — milieu','g2',{color:1})+sField('Bandeau — fin','g3',{color:1})+'</div></div>'+
    '<div class="row"><button class="btn" data-act="settings-save">'+ic('save')+' Enregistrer</button><button class="btn outline" data-act="settings-reset">Rétablir les valeurs par défaut</button><a class="btn ghost" href="#/">Voir la page d\'accueil</a></div></div>'}
@@ -869,17 +803,15 @@ function viewAdmin(ctx){
   var pr=ctx.profiles||[];var ens=pr.filter(function(u){return u.role==='enseignant'}).length,etu=pr.filter(function(u){return u.role==='etudiant'}).length;
   function stat(i,l,v){return '<div class="card stat">'+ic(i,'s5')+'<div class="v">'+v+'</div><div class="k">'+l+'</div></div>'}
   var h='<div class="wrap py10 admin"><div class="ad-head">'+ic('shield','s5')+'<span class="ochre-label">Console d\'administration</span></div><h1>Administration</h1>'+
-   '<div class="tabs2 mt6">'+[['users','Utilisateurs'],['courses','Cours'],['structure','Axes'],['site','Apparence & accueil'],['backup','Sauvegarde']].map(function(t){return '<button class="'+(ui.adminTab===t[0]?'on':'')+'" data-act="admin-tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
+   '<div class="tabs2 mt6">'+[['users','Utilisateurs'],['courses','Cours'],['site',"Page d'accueil"]].map(function(t){return '<button class="'+(ui.adminTab===t[0]?'on':'')+'" data-act="admin-tab" data-v="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
   if(ui.adminTab==='users'){
     h+='<div class="stat4">'+stat('users','Total comptes',pr.length)+stat('grad','Enseignants',ens)+stat('usercog','Étudiants',etu)+stat('book','Cours',allCourses().length)+'</div>'+
      '<div class="toolbar"><div class="row" style="align-items:center"><div class="tw"><span>'+ic('search')+'</span><input id="user-search" class="input pl" placeholder="Rechercher…" value="'+esc(ui.adminQ)+'"></div>'+
      '<select id="role-filter" class="select" style="width:160px">'+[['tous','Tous les rôles'],['enseignant','Enseignants'],['etudiant','Étudiants'],['admin','Administrateurs']].map(function(o){return '<option value="'+o[0]+'"'+(ui.adminRole===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
-     '<div class="row"><button class="btn outline" data-act="csv-open">Importer un CSV</button><button class="btn" data-act="user-new">'+ic('userplus')+' Nouvel utilisateur</button></div></div>'+
+     '<button class="btn" data-act="user-new">'+ic('userplus')+' Nouvel utilisateur</button></div>'+
      '<div class="card tablebox" id="users-table">'+usersTable()+'</div>';
   }else if(ui.adminTab==='courses'){
-    h+='<div class="toolbar"><p class="muted sm">Créez de nouveaux cours ; modifiez la structure et ajoutez le contenu depuis la page de chaque cours.</p><button class="btn" data-act="course-new">'+ic('plus')+' Nouveau cours</button></div><div class="card tablebox">'+coursesTable()+'</div>'+hiddenView();
-  }else if(ui.adminTab==='structure'){h+=structView();
-  }else if(ui.adminTab==='backup'){h+=backupView();
+    h+='<div class="toolbar"><p class="muted sm">Créez de nouveaux cours ; modifiez la structure et ajoutez le contenu depuis la page de chaque cours.</p><button class="btn" data-act="course-new">'+ic('plus')+' Nouveau cours</button></div><div class="card tablebox">'+coursesTable()+'</div>';
   }else h+=siteForm();
   return h+'</div>'}
 
@@ -888,7 +820,7 @@ function openDialog(existing){
   ui.dialog=existing?{id:existing.id,existing:true,name:existing.name,email:existing.email,password:'',role:existing.role,codes:(existing.course_codes||[]).slice()}
     :{existing:false,name:'',email:'',password:'',role:'etudiant',codes:[]};
   renderDialog()}
-function closeDialog(){ui.dialog=null;ui.blockDlg=null;ui.courseDlg=null;ui.csvDlg=null;document.getElementById('modal-root').innerHTML=''}
+function closeDialog(){ui.dialog=null;ui.blockDlg=null;ui.courseDlg=null;document.getElementById('modal-root').innerHTML=''}
 function renderDialog(){
   var d=ui.dialog;if(!d)return;var courses=allCourses();var grouped={};
   courses.forEach(function(c){(grouped[c.year]=grouped[c.year]||[]).push(c)});
@@ -964,7 +896,7 @@ async function saveBlockDialog(){
   closeDialog();render()}
 
 /* ----- dialogue nouveau cours ----- */
-function openCourseDialog(){ui.courseDlg={code:'',title:'',year:YEARS[0],axis:axesList()[0]||'',credits:'3 cr.',prof:'',schedule:'',prereq:'',mode:'asynchrone',room_url:'',desc:''};renderCourseDialog()}
+function openCourseDialog(){ui.courseDlg={code:'',title:'',year:YEARS[0],axis:(DATA.axes||[])[0]||'',credits:'3 cr.',prof:'',schedule:'',prereq:'',mode:'asynchrone',room_url:'',desc:''};renderCourseDialog()}
 function renderCourseDialog(){
   var d=ui.courseDlg;if(!d)return;
   var opt=function(list,cur){return list.map(function(o){return '<option value="'+esc(o)+'"'+(cur===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')};
@@ -972,7 +904,7 @@ function renderCourseDialog(){
   document.getElementById('modal-root').innerHTML='<div class="overlay" data-act="dlg-overlay"><div class="modal wide" role="dialog"><button class="x" data-act="dlg-close" aria-label="Fermer">×</button><h3>Nouveau cours</h3><div class="stack4">'+
    '<div class="grid" style="grid-template-columns:1fr 2fr;gap:12px">'+inp('Code du cours','code','ex. TS-501')+inp('Titre','title','Titre du cours')+'</div>'+
    '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px"><div class="field"><label class="lbl">Année / catégorie</label><select class="select" data-c="year">'+opt(YEARS,d.year)+'</select></div>'+
-   '<div class="field"><label class="lbl">Axe</label><select class="select" data-c="axis">'+opt(axesList(),d.axis)+'</select></div>'+
+   '<div class="field"><label class="lbl">Axe</label><select class="select" data-c="axis">'+opt(DATA.axes||[],d.axis)+'</select></div>'+
    '<div class="field"><label class="lbl">Modalité</label><select class="select" data-c="mode">'+['asynchrone','synchrone','hybride'].map(function(m){return '<option value="'+m+'"'+(d.mode===m?' selected':'')+'>'+MODE_LABELS[m]+'</option>'}).join('')+'</select></div></div>'+
    '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">'+inp('Enseignant','prof')+inp('Crédits','credits')+inp('Horaire','schedule','ex. Jeudi 18 h – 21 h')+'</div>'+
    inp('Préalable (facultatif)','prereq')+inp('Lien de la salle virtuelle (facultatif)','room_url','https://')+
@@ -990,159 +922,6 @@ async function saveCourseDialog(){
   state.custom[code]=data;toast('Cours créé','ok');closeDialog();go('#/cours/'+encodeURIComponent(code))}
 
 /* ================= Rendu principal ================= */
-
-/* ----- notes (intra, TP, final) ----- */
-function gNum(v){v=String(v==null?'':v).replace(',','.').trim();if(v==='')return null;var n=parseFloat(v);return isNaN(n)?null:Math.max(0,Math.min(100,n))}
-function gTotal(n,w){var t=0,ws=0;['intra','tp','final'].forEach(function(k){if(n[k]!=null&&n[k]!==''){t+=(+n[k])*(+w[k]||0);ws+=(+w[k]||0)}});return ws?Math.round(t/ws*10)/10:null}
-function gMention(t){return t==null?'—':t>=90?'A':t>=80?'B':t>=70?'C':t>=60?'D':'Échec'}
-function gradesPane(user,base,ctx,edit,isStu){
-  if(!edit&&!isStu)return '';
-  var w=ctx.weights||{intra:30,tp:30,final:40};var gm={};(ctx.grades||[]).forEach(function(g){gm[g.student_id]=g});
-  var h='<div class="pane" data-pane="notes"'+(ui.tab==='notes'?'':' hidden')+'>';
-  function v(x){return x==null?'':x}
-  if(edit){
-    var ro=ctx.roster||[];
-    h+='<div class="paper" style="padding:24px"><h3 class="serif" style="font-size:20px;font-weight:600">Liste des étudiant·e·s et notes</h3>'+
-     '<p class="sm muted" style="margin-top:6px">Saisissez les notes sur 100. Le total est pondéré selon les pourcentages ci-dessous.</p>'+
-     '<div class="row" style="gap:12px;margin:14px 0;align-items:end">'+[['intra','Intra (%)'],['tp','TP (%)'],['final','Final (%)']].map(function(k){return '<label class="xs muted" style="display:block">'+k[1]+'<input class="input gw" data-gw="'+k[0]+'" inputmode="numeric" style="width:90px;display:block;margin-top:4px" value="'+esc(w[k[0]])+'"></label>'}).join('')+'<span class="xs muted" id="gw-sum"></span></div>';
-    if(!ro.length)h+='<p class="sm muted">Aucun·e étudiant·e inscrit·e à ce cours. L\'administrateur peut en ajouter dans Administration → Utilisateurs.</p>';
-    else h+='<div style="overflow-x:auto"><table class="gtab"><thead><tr><th>#</th><th>Étudiant·e</th><th>Intra</th><th>TP</th><th>Final</th><th>Total</th><th>Mention</th></tr></thead><tbody>'+
-      ro.map(function(s,i){var g=gm[s.id]||{};return '<tr data-sid="'+esc(s.id)+'" data-name="'+esc(s.name||s.email)+'" data-email="'+esc(s.email)+'"><td class="muted">'+(i+1)+'</td><td><div style="font-weight:500">'+esc(s.name||'—')+'</div><div class="xs muted">'+esc(s.email)+'</div></td>'+
-       ['intra','tp','final'].map(function(k){return '<td><input class="input gin" data-gk="'+k+'" inputmode="decimal" value="'+esc(v(g[k]))+'"></td>'}).join('')+'<td class="gt" style="font-weight:700">—</td><td class="gm">—</td></tr>'}).join('')+'</tbody></table></div>'+
-      '<div class="row" style="margin-top:14px;gap:8px"><button class="btn" data-act="grades-save">'+ic('save')+' Enregistrer les notes</button><button class="btn outline" data-act="grades-csv">Exporter en CSV</button></div>';
-    return h+'</div></div>';
-  }
-  var g=gm[user.id]||{};var t=gTotal(g,w);
-  h+='<div class="paper" style="padding:24px"><h3 class="serif" style="font-size:20px;font-weight:600">Mes notes</h3>';
-  if(!gm[user.id])h+='<p class="sm muted" style="margin-top:8px">Aucune note n\'a encore été saisie.</p>';
-  else h+='<div class="row" style="gap:24px;margin-top:14px">'+[['intra','Intra'],['tp','TP'],['final','Final']].map(function(k){return '<div><div class="xs muted">'+k[1]+' ('+esc(w[k[0]])+'%)</div><div style="font-size:22px;font-weight:600">'+(g[k[0]]==null?'—':esc(g[k[0]]))+'</div></div>'}).join('')+
-    '<div><div class="xs muted">Total</div><div style="font-size:22px;font-weight:700">'+(t==null?'—':t+' / 100')+'</div></div><div><div class="xs muted">Mention</div><div style="font-size:22px;font-weight:700">'+gMention(t)+'</div></div></div>';
-  return h+'</div></div>'}
-function gRecalc(){var pane=document.querySelector('[data-pane="notes"]');if(!pane)return;var w={};pane.querySelectorAll('.gw').forEach(function(i){w[i.getAttribute('data-gw')]=+i.value||0});
-  var sum=(w.intra||0)+(w.tp||0)+(w.final||0);var se=document.getElementById('gw-sum');if(se)se.textContent='Total des pondérations : '+sum+'%'+(sum!==100?' (devrait être 100)':'');
-  pane.querySelectorAll('tbody tr').forEach(function(tr){var n={};tr.querySelectorAll('.gin').forEach(function(i){n[i.getAttribute('data-gk')]=gNum(i.value)});var t=gTotal(n,w);tr.querySelector('.gt').textContent=t==null?'—':t;tr.querySelector('.gm').textContent=gMention(t)})}
-function gCollect(){var pane=document.querySelector('[data-pane="notes"]');var w={};pane.querySelectorAll('.gw').forEach(function(i){w[i.getAttribute('data-gw')]=+i.value||0});
-  var rows=[];pane.querySelectorAll('tbody tr').forEach(function(tr){var n={student_id:tr.getAttribute('data-sid'),name:tr.getAttribute('data-name'),email:tr.getAttribute('data-email')};tr.querySelectorAll('.gin').forEach(function(i){n[i.getAttribute('data-gk')]=gNum(i.value)});rows.push(n)});return {w:w,rows:rows}}
-
-/* ----- administration avancée : logo, axes, cours ----- */
-function readLogo(file){return new Promise(function(res,rej){
-  if(file.size>4*1024*1024)return rej(new Error('Image trop lourde (max 4 Mo).'));
-  var r=new FileReader();r.onerror=function(){rej(new Error('Lecture impossible'))};
-  r.onload=function(){
-    if(/svg/.test(file.type))return res(r.result);
-    var im=new Image();im.onerror=function(){rej(new Error('Image illisible'))};
-    im.onload=function(){var m=320,k=Math.min(1,m/Math.max(im.width,im.height));var c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL(file.type==='image/jpeg'?'image/jpeg':'image/png',0.9))};
-    im.src=r.result};
-  r.readAsDataURL(file)})}
-async function saveStruct(patch){var cur=Object.assign({},state.settings||{},patch);await S.saveSettings(cur);state.settings=cur}
-async function changeCourseField(code,field,val){
-  try{
-    if(state.custom&&state.custom[code]){var d=Object.assign({},state.custom[code]);d[field]=val;await S.saveCustomCourse(code,d);state.custom[code]=d}
-    else{var e=Object.assign({},state.edits[code]||{});e[field]=val;await S.saveEdit(code,e);state.edits[code]=e}
-    toast('Cours mis à jour','ok');render()
-  }catch(err){fail(err)}}
-function structView(){
-  var ax=axesList();var all=allCourses();
-  var h='<div class="toolbar"><p class="muted sm">Les axes regroupent les cours du programme. Renommez, réordonnez, ajoutez ou supprimez un axe : les cours suivent automatiquement.</p></div><div class="card" style="padding:8px 20px">'+
-   ax.map(function(a,i){var n=all.filter(function(c){return c.axis===a}).length;
-     return '<div class="axrow"><span class="badge '+axisClass(a)+'">'+(i+1)+'</span><span class="nm">'+esc(a)+' <span class="muted xs">· '+n+' cours</span></span>'+
-      '<button class="btn ghost icon" data-act="axis-up" data-i="'+i+'" aria-label="Monter"'+(i===0?' disabled':'')+'>↑</button><button class="btn ghost icon" data-act="axis-down" data-i="'+i+'" aria-label="Descendre"'+(i===ax.length-1?' disabled':'')+'>↓</button>'+
-      '<button class="btn ghost icon" data-act="axis-rename" data-i="'+i+'" aria-label="Renommer">'+ic('pencil')+'</button><button class="btn ghost icon" style="color:var(--destructive)" data-act="axis-del" data-i="'+i+'" aria-label="Supprimer">'+ic('trash')+'</button></div>'}).join('')+
-   '<div class="row" style="padding:14px 0;gap:8px"><input id="new-axis" class="input" style="max-width:320px" placeholder="Nom du nouvel axe"><button class="btn" data-act="axis-add">'+ic('plus')+' Ajouter un axe</button></div></div>';
-  return h}
-function hiddenView(){var hid=getSettings().hidden_courses||[];if(!hid.length)return '';
-  return '<div class="paper" style="padding:16px 20px;margin-top:20px"><h4 style="font-weight:600">Cours retirés du catalogue ('+hid.length+')</h4>'+hid.map(function(c){var b=DATA.courses.find(function(x){return x.code===c});
-   return '<div class="axrow"><span class="mono xs muted">'+esc(c)+'</span><span class="nm">'+esc(b?b.title:c)+'</span><button class="btn outline sm" data-act="course-restore" data-code="'+esc(c)+'">Rétablir</button></div>'}).join('')+'</div>'}
-
-/* ----- mot de passe ----- */
-function viewPw(mode){
-  var forced=mode==='forced',rec=mode==='recovery';
-  return '<div class="loginwrap" style="display:block"><div class="formside" style="min-height:70vh"><div class="form fade" style="margin:40px auto"><div><h2>'+(forced?'Choisissez votre mot de passe':rec?'Nouveau mot de passe':'Changer mon mot de passe')+'</h2>'+
-   '<p class="muted sm" style="margin-top:4px">'+(forced?'Pour votre sécurité, remplacez le mot de passe temporaire avant de continuer.':rec?'Saisissez votre nouveau mot de passe.':'Choisissez un mot de passe d\'au moins 8 caractères.')+'</p></div><div id="pw-msg"></div>'+
-   (rec?'':'<div class="field"><label class="lbl" for="pw-old">Mot de passe actuel</label><input class="input" id="pw-old" type="password" autocomplete="current-password"></div>')+
-   '<div class="field"><label class="lbl" for="pw-new">Nouveau mot de passe</label><input class="input" id="pw-new" type="password" autocomplete="new-password"></div>'+
-   '<div class="field"><label class="lbl" for="pw-new2">Confirmer</label><input class="input" id="pw-new2" type="password" autocomplete="new-password"></div>'+
-   '<button class="btn full" data-act="pw-save" data-mode="'+mode+'">Enregistrer</button>'+(forced?'<p class="footnote"><a href="#" data-act="logout" style="text-decoration:underline">Se déconnecter</a></p>':'')+'</div></div></div>'}
-
-/* ----- relevé de notes ----- */
-function crOf(c){var n=parseFloat(String(c.credits||'').replace(',','.'));return isNaN(n)?0:n}
-function viewReleve(user,ctx){
-  var st=ctx.student;if(!st)return '<div class="center">Étudiant introuvable</div>';
-  var rel=ctx.rel||{grades:[],weights:{}};var gm={};rel.grades.forEach(function(g){gm[g.course_code]=g});
-  var cs=getSettings();var courses=allCourses().filter(function(c){return (st.course_codes||[]).indexOf(c.code)>=0}).sort(function(a,b){return (YEARS.indexOf(a.year)-YEARS.indexOf(b.year))||String(a.code).localeCompare(String(b.code))});
-  var sumW=0,sumC=0,earned=0,tried=0;
-  var rows=courses.map(function(c){var g=gm[c.code]||{};var w=rel.weights[c.code]||{intra:30,tp:30,final:40};var t=gTotal(g,w);var cr=crOf(c);
-    if(t!=null){sumW+=t*cr;sumC+=cr;tried+=cr;if(t>=60)earned+=cr}
-    function v(x){return x==null?'—':x}
-    return '<tr><td class="mono xs">'+esc(c.code)+'</td><td>'+esc(c.title)+'</td><td class="r">'+cr+'</td><td class="r">'+v(g.intra)+'</td><td class="r">'+v(g.tp)+'</td><td class="r">'+v(g.final)+'</td><td class="r" style="font-weight:700">'+(t==null?'—':t)+'</td><td>'+gMention(t)+'</td></tr>'}).join('');
-  var avg=sumC?Math.round(sumW/sumC*10)/10:null;
-  return '<div class="wrap6 py8" id="releve"><div class="row noprint" style="margin-bottom:16px;gap:8px"><a class="back" href="'+(user.role==="admin"&&st.id!==user.id?'#/admin':'#/tableau-de-bord')+'">'+ic('left')+' Retour</a><button class="btn" data-act="print" style="margin-left:auto">Imprimer / enregistrer en PDF</button></div>'+
-   '<div class="paper" style="padding:32px"><div class="row" style="align-items:center;gap:14px">'+(cs.logo?'<img class="logoimg" style="height:56px" src="'+esc(cs.logo)+'" alt="">':'')+'<div><div class="serif" style="font-size:26px;font-weight:700">'+esc(cs.brand_name)+'</div><div class="xs muted" style="text-transform:uppercase;letter-spacing:.14em">'+esc(cs.program_title)+'</div></div></div>'+
-   '<h1 class="serif" style="font-size:30px;margin-top:22px">Relevé de notes</h1>'+
-   '<div class="row sm" style="gap:28px;margin-top:10px"><div><span class="muted">Étudiant·e</span><br><b>'+esc(st.name||st.email)+'</b></div><div><span class="muted">Courriel</span><br>'+esc(st.email)+'</div><div><span class="muted">Date</span><br>'+new Date().toLocaleDateString('fr-CA',{day:'numeric',month:'long',year:'numeric'})+'</div></div>'+
-   (courses.length?'<div style="overflow-x:auto;margin-top:22px"><table class="gtab"><thead><tr><th>Code</th><th>Cours</th><th class="r">Crédits</th><th class="r">Intra</th><th class="r">TP</th><th class="r">Final</th><th class="r">Total /100</th><th>Mention</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
-    :'<p class="muted" style="margin-top:22px">Aucun cours inscrit.</p>')+
-   '<div class="row" style="gap:28px;margin-top:22px"><div><div class="xs muted">Moyenne pondérée (crédits)</div><div style="font-size:26px;font-weight:700">'+(avg==null?'—':avg+' / 100')+'</div></div><div><div class="xs muted">Mention</div><div style="font-size:26px;font-weight:700">'+gMention(avg)+'</div></div><div><div class="xs muted">Crédits obtenus</div><div style="font-size:26px;font-weight:700">'+earned+' / '+tried+'</div></div></div>'+
-   '<p class="xs muted" style="margin-top:20px">Seuil de réussite : 60 / 100. Mentions : A ≥ 90 · B ≥ 80 · C ≥ 70 · D ≥ 60. Les cours sans note ne sont pas comptés dans la moyenne.</p></div></div>'}
-
-/* ----- import CSV ----- */
-function normH(h){return String(h||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,'')}
-function parseCSV(text){
-  text=String(text||'').replace(/^﻿/,'');var lines=text.split(/\r?\n/).filter(function(l){return l.trim()});if(!lines.length)return [];
-  var first=lines[0];var delim=[';','\t',','].map(function(d){return [d,first.split(d).length]}).sort(function(a,b){return b[1]-a[1]})[0][0];
-  function split(l){var out=[],cur='',q=false;for(var i=0;i<l.length;i++){var ch=l[i];if(ch==='"'){if(q&&l[i+1]==='"'){cur+='"';i++}else q=!q}else if(ch===delim&&!q){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out.map(function(x){return x.trim()})}
-  var head=split(first).map(normH);var hasHead=head.some(function(h){return /^(nom|name|courriel|email|mail|courrielelectronique|role|cours|codes|motdepasse|password)$/.test(h)});
-  var idx={nom:-1,email:-1,role:-1,cours:-1,pw:-1};
-  if(hasHead){head.forEach(function(h,i){if(/^(nom|name|nomcomplet)$/.test(h))idx.nom=i;else if(/^(courriel|email|mail|adresse|adressecourriel)$/.test(h))idx.email=i;else if(h==='role')idx.role=i;else if(/^(cours|codes|courscodes|codescours)$/.test(h))idx.cours=i;else if(/^(motdepasse|password|mdp|motdepassetemporaire)$/.test(h))idx.pw=i})}
-  else{idx.nom=0;idx.email=1;idx.role=2;idx.cours=3;idx.pw=4}
-  var body=hasHead?lines.slice(1):lines;
-  return body.map(function(l){var c=split(l);function g(i){return i>=0&&i<c.length?c[i]:''}return {nom:g(idx.nom),email:g(idx.email).toLowerCase(),role:g(idx.role),cours:g(idx.cours),pw:g(idx.pw)}})}
-function genPw(){var a='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789',o='';for(var i=0;i<10;i++)o+=a[Math.floor(Math.random()*a.length)];return o}
-function csvEsc(v){v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
-function dlFile(name,mime,content){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500)}
-function renderCsvDialog(){var d=ui.csvDlg;if(!d)return;
-  var h='<div class="overlay" data-act="dlg-overlay"><div class="modal wide" role="dialog"><button class="x" data-act="dlg-close" aria-label="Fermer">×</button><h3>Importer des utilisateurs (CSV)</h3><div class="stack4">'+
-   '<p class="hint">Colonnes : <b>nom</b>, <b>courriel</b>, <b>role</b> (étudiant par défaut), <b>cours</b> (codes séparés par | ), <b>mot_de_passe</b> (facultatif'+(S.mode==='cloud'?' — inutile en ligne : chaque personne crée le sien':' — généré si vide')+'). Séparateur , ou ; accepté.</p>'+
-   '<div><button class="btn outline sm" data-act="csv-tpl">Télécharger un modèle</button></div>'+
-   '<div class="field"><label class="lbl">Fichier CSV</label><input type="file" class="input" accept=".csv,.txt,text/csv" data-csvfile="1" style="padding-top:6px"></div>'+
-   '<div class="field"><label class="lbl">…ou collez le contenu</label><textarea class="textarea" rows="6" data-csv="text">'+esc(d.text)+'</textarea></div>'+
-   '<div class="grid fg2" style="gap:12px"><div class="field"><label class="lbl">Rôle par défaut</label><select class="select" data-csv="role">'+[['etudiant','Étudiant'],['enseignant','Enseignant']].map(function(o){return '<option value="'+o[0]+'"'+(d.role===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
-   '<div class="field"><label class="lbl">Cours pour toutes les lignes sans cours</label><input class="input" data-csv="codes" placeholder="SW101-102|SOC101" value="'+esc(d.codes)+'"></div></div>'+
-   (d.result?'<div class="box" style="border-color:var(--sage)"><b>'+d.result.made+' compte(s) préparé(s)</b>'+(d.result.skipped.length?' · '+d.result.skipped.length+' déjà existant(s) ignoré(s)':'')+(d.result.errors.length?'<br><span style="color:var(--destructive)">'+d.result.errors.length+' ligne(s) en erreur :</span><br><span class="xs">'+d.result.errors.slice(0,8).map(esc).join('<br>')+(d.result.errors.length>8?'<br>…':'')+'</span>':'')+
-     (d.result.csv?'<div class="mt3"><button class="btn outline sm" data-act="csv-dl">Télécharger les identifiants créés</button></div>':'')+'</div>':'')+
-   '</div><div class="foot"><button class="btn ghost" data-act="dlg-close">Fermer</button><button class="btn" data-act="csv-run">Importer</button></div></div></div>';
-  document.getElementById('modal-root').innerHTML=h}
-async function runCsvImport(){
-  var d=ui.csvDlg;var rows=parseCSV(d.text);if(!rows.length)return toast('Aucune ligne à importer.','ko');
-  var known={};allCourses().forEach(function(c){known[c.code.toLowerCase()]=c.code});
-  var defCodes=(d.codes||'').split(/[|+;\s]+/).filter(Boolean);var errors=[],ok=[],seen={};
-  rows.forEach(function(r,i){var ln=i+1;
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email))return errors.push('Ligne '+ln+' : courriel invalide ('+(r.email||'vide')+')');
-    if(seen[r.email])return errors.push('Ligne '+ln+' : courriel en double ('+r.email+')');seen[r.email]=1;
-    var rl=normH(r.role)||d.role;rl=/^admin/.test(rl)?'admin':/^ens|prof/.test(rl)?'enseignant':/^etu|^stud|^eleve/.test(rl)?'etudiant':(r.role?null:d.role);
-    if(!rl)return errors.push('Ligne '+ln+' : rôle inconnu ('+r.role+')');
-    var codes=(r.cours?r.cours.split(/[|+;\s]+/).filter(Boolean):defCodes.slice()),good=[];
-    codes.forEach(function(c){var k=known[c.toLowerCase()];if(k)good.push(k);else errors.push('Ligne '+ln+' : cours inconnu « '+c+' » (ignoré)')});
-    ok.push({name:r.nom||r.email.split('@')[0],email:r.email,role:rl,course_codes:rl==='admin'?[]:good,password:S.mode==='local'?(r.pw||genPw()):''})});
-  if(!ok.length){d.result={made:0,skipped:[],errors:errors};renderCsvDialog();return}
-  var res=await S.inviteMany(ok);
-  var created=ok.filter(function(o){return res.skipped.indexOf(o.email)<0});
-  d.result={made:res.made,skipped:res.skipped,errors:errors,csv:S.mode==='local'?'Nom;Courriel;Role;Mot de passe temporaire\n'+created.map(function(o){return [o.name,o.email,o.role,o.password].map(csvEsc).join(';')}).join('\n'):''};
-  renderCsvDialog();toast(res.made+' compte(s) préparé(s)','ok');var ctx=ui.ctx||{};try{ctx.profiles=await S.profiles();ctx.invites=await S.invites();var t=document.getElementById('users-table');if(t)t.innerHTML=usersTable()}catch(e){}}
-
-/* ----- sauvegarde ----- */
-function backupView(){return '<div class="stack6 mt6"><div class="paper" style="padding:22px"><h3 class="serif" style="font-size:20px;font-weight:600">Sauvegarde des données</h3>'+
-  '<p class="sm muted" style="margin-top:8px;line-height:1.7">Exporte tout le contenu de la plateforme : utilisateurs (sans mots de passe), cours modifiés et créés, contenu des séances, notes, pondérations, devoirs, forum, progression et réglages. Les fichiers déposés (documents, pièces jointes) ne sont pas inclus : ils restent dans Supabase Storage.</p>'+
-  '<div class="row mt4" style="gap:8px"><button class="btn" data-act="backup-json">'+ic('save')+' Exporter tout (JSON)</button><button class="btn outline" data-act="backup-grades">Exporter toutes les notes (CSV)</button></div>'+
-  '<p class="hint mt3">Conseil : faites une sauvegarde à la fin de chaque session d\'examens. '+(S.mode==='local'?'En mode démonstration, ces données ne vivent que dans ce navigateur : sauvegardez-les régulièrement.':'Supabase Pro ajoute aussi des sauvegardes quotidiennes automatiques.')+'</p></div></div>'}
-async function doBackup(kind){
-  var o=await S.exportAll();var day=new Date().toISOString().slice(0,10);
-  if(kind==='json'){dlFile('makandal-sauvegarde-'+day+'.json','application/json',JSON.stringify(o,null,2));return}
-  var names={};(o.profiles||[]).forEach(function(p){names[p.id]=p});var gw=o.grade_weights||{};if(Array.isArray(gw)){var m={};gw.forEach(function(x){m[x.course_code]=x});gw=m}
-  var ln=['Cours;Étudiant;Courriel;Intra;TP;Final;Total;Mention'];
-  (o.grades||[]).forEach(function(g){var p=names[g.student_id]||{};var w=gw[g.course_code]||{intra:30,tp:30,final:40};var t=gTotal(g,w);
-    ln.push([g.course_code,p.name||'',p.email||'',g.intra==null?'':g.intra,g.tp==null?'':g.tp,g.final==null?'':g.final,t==null?'':t,gMention(t)].map(csvEsc).join(';'))});
-  dlFile('notes-toutes-'+day+'.csv','text/csv','﻿'+ln.join('\n'))}
 var rtoken=0;
 async function render(){
   var tk=++rtoken;var sy=window.scrollY;var r=route();var user=state.user;
@@ -1153,9 +932,7 @@ async function render(){
   if(key!==ui.lastRoute){if(r.name!=='course'){ui.editing=false;ui.draft=null}ui.tab='seances';ui.lastRoute=key;sy=0;if(r.name!=='admin')ui.settingsDraft=null}
   if(r.name==='redirect'){location.hash=r.to;return}
   if(r.name==='login'&&user){location.hash='#/tableau-de-bord';return}
-  if(ui.recovery){app.innerHTML=navbar(null)+viewPw('recovery');return}
-  if((r.name==='course'||r.name==='dash'||r.name==='admin'||r.name==='pw'||r.name==='releve')&&!user){location.hash='#/login';return}
-  if(user&&user.must_change&&r.name!=='login'){app.innerHTML=navbar(user)+viewPw('forced');return}
+  if((r.name==='course'||r.name==='dash'||r.name==='admin')&&!user){location.hash='#/login';return}
   if(r.name==='admin'&&user.role!=='admin'){location.hash='#/';return}
   if(r.name==='course'&&!enrolled(user,r.code)){toast("Ce cours ne fait pas partie de vos cours : demandez l'accès à l'administrateur.",'ko');location.hash='#/tableau-de-bord';return}
   var ctx={},page='';
@@ -1163,13 +940,8 @@ async function render(){
     if(r.name==='course'){
       var res=await Promise.all([S.blocks(r.code),S.progress(r.code),S.subs(r.code),S.forum(r.code)]);
       ctx.blocks=res[0];ctx.completed=res[1];ctx.subs=res[2];ctx.posts=res[3];ctx.urls=await S.fileUrls(ctx.blocks);
-      try{ctx.subUrls=await S.subFileUrls(ctx.subs||[])}catch(e3){ctx.subUrls={}}
-      try{var gr=await Promise.all([canEdit(user,r.code)?S.roster(r.code):Promise.resolve([]),S.grades(r.code),S.weights(r.code)]);ctx.roster=gr[0];ctx.grades=gr[1];ctx.weights=gr[2]}
-      catch(e2){ctx.roster=[];ctx.grades=[];ctx.weights={intra:30,tp:30,final:40}}
     }
     if(r.name==='admin'){ctx.profiles=await S.profiles();ctx.invites=await S.invites()}
-    if(r.name==='releve'){var sid=r.id||user.id;if(sid!==user.id&&user.role!=='admin'){location.hash='#/tableau-de-bord';return}
-      ctx.rel=await S.releve(sid);ctx.student=sid===user.id?user:(await S.profiles()).find(function(p){return p.id===sid})}
     if(r.name==='dash'){ctx.live=await S.upcomingLive(user.role==='admin'?null:(user.course_codes||[]))}
   }catch(e){toast(e.message||'Erreur de chargement','ko')}
   if(tk!==rtoken)return;
@@ -1179,16 +951,13 @@ async function render(){
   else if(r.name==='dash')page=viewDash(user,ctx);
   else if(r.name==='admin')page=viewAdmin(ctx);
   else if(r.name==='course')page=viewCourse(user,r.code,ctx);
-  else if(r.name==='pw')page=viewPw('normal');
-  else if(r.name==='releve')page=viewReleve(user,ctx);
   app.innerHTML=navbar(user)+page;
-  gRecalc();
   window.scrollTo(0,sy)}
 
 /* ================= Événements ================= */
 function fail(e){toast((e&&e.message)||'Erreur','ko')}
 document.addEventListener('click',function(e){
-  var el=e.target.closest('[data-act]');if(!el)return;var act=el.getAttribute('data-act');var user=state.user;var r=route();if(el.tagName==='A'&&el.getAttribute('href')==='#')e.preventDefault();
+  var el=e.target.closest('[data-act]');if(!el)return;var act=el.getAttribute('data-act');var user=state.user;var r=route();
   if(act==='dlg-overlay'){if(e.target!==el)return;return closeDialog()}
   if(act==='seance-check')return;
   (async function(){try{switch(act){
@@ -1200,7 +969,7 @@ document.addEventListener('click',function(e){
    case 'axis':ui.axis=el.getAttribute('data-v');render();break;
    case 'tab':ui.tab=el.getAttribute('data-v');
      document.querySelectorAll('.tabbtn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===ui.tab)});
-     document.querySelectorAll('.pane').forEach(function(p){p.hidden=p.getAttribute('data-pane')!==ui.tab});gRecalc();break;
+     document.querySelectorAll('.pane').forEach(function(p){p.hidden=p.getAttribute('data-pane')!==ui.tab});break;
    case 'acc':var item=el.closest('.acc-item');item.classList.toggle('open');ui.open[item.getAttribute('data-key')]=item.classList.contains('open');break;
    case 'form-toggle':var box=el.closest('.blk').querySelector('.formbox');
      if(box.firstChild){box.innerHTML='';el.textContent=el.getAttribute('data-label')||'Afficher dans la page'}
@@ -1221,32 +990,13 @@ document.addEventListener('click',function(e){
    case 'blk-del':var b2=(ui.ctx.blocks||[]).find(function(b){return b.id===el.getAttribute('data-id')});if(!b2)return;
      if(!confirm('Supprimer cet élément de contenu ?'))return;await S.deleteBlock(b2);toast('Contenu supprimé','ok');render();break;
    case 'blk-save':await saveBlockDialog();break;
-   case 'sub-send':var ta=document.getElementById('sub-text');var tx=(ta.value||'').trim();var sf=(document.getElementById('sub-file')||{}).files;sf=sf&&sf[0]||null;if(!tx&&!sf)return toast('Écrivez votre travail ou joignez un fichier.','ko');
-     if(sf&&sf.size>MAX_FILE)return toast('Fichier trop lourd.','ko');
-     await S.addSub(r.code,tx,sf);toast('Devoir soumis','ok');render();break;
+   case 'sub-send':var ta=document.getElementById('sub-text');var tx=(ta.value||'').trim();if(!tx)return;
+     await S.addSub(r.code,tx);toast('Devoir soumis','ok');render();break;
    case 'grade':var sub=(ui.ctx.subs||[]).find(function(s){return String(s.id)===el.getAttribute('data-id')});if(!sub)return;
      if(!canEdit(user,sub.code||sub.course_code))return toast('Accès refusé','ko');
      var g=prompt('Note (ex: 18/20) :');if(g==null)return;var fb=prompt('Commentaire (optionnel) :')||'';
      await S.grade(sub.id,g,fb);toast('Note enregistrée','ok');render();break;
    case 'forum-post':await postForum();break;
-   case 'print':window.print();break;
-   case 'csv-open':ui.csvDlg={text:'',role:'etudiant',codes:'',result:null};renderCsvDialog();break;
-   case 'csv-tpl':dlFile('modele-utilisateurs.csv','text/csv','﻿nom;courriel;role;cours;mot_de_passe\nMarie Joseph;marie@exemple.org;etudiant;SW101-102|SOC101;\nJean Pierre;jean@exemple.org;enseignant;SW101-102;\n');break;
-   case 'csv-run':await runCsvImport();break;
-   case 'csv-dl':dlFile('comptes-crees.csv','text/csv','﻿'+ui.csvDlg.result.csv);break;
-   case 'backup-json':await doBackup('json');break;
-   case 'backup-grades':await doBackup('grades');break;
-   case 'pw-forgot':e.preventDefault();var fe=((document.getElementById('email')||{}).value||'').trim()||prompt('Votre adresse email :');if(!fe)return;
-     try{await S.resetPassword(fe);toast('Si ce compte existe, un courriel de réinitialisation vient d\'être envoyé.','ok')}catch(e4){fail(e4)}break;
-   case 'pw-save':var pm=el.getAttribute('data-mode');var po=(document.getElementById('pw-old')||{}).value,pn=document.getElementById('pw-new').value,pn2=document.getElementById('pw-new2').value;var pmsg=document.getElementById('pw-msg');
-     function pe(t){pmsg.innerHTML='<div class="err">'+esc(t)+'</div>'}
-     if(pn.length<8)return pe('Le mot de passe doit contenir au moins 8 caractères.');if(pn!==pn2)return pe('Les deux mots de passe ne correspondent pas.');if(pm!=='recovery'&&pn===po)return pe("Le nouveau mot de passe doit être différent de l'actuel.");
-     try{await S.changePassword(pm==='recovery'?null:po,pn)}catch(e5){return pe(e5.message)}
-     if(pm==='recovery'){ui.recovery=false;try{history.replaceState(null,'',location.pathname+'#/tableau-de-bord')}catch(e6){}}
-     state.user=await S.init();toast('Mot de passe mis à jour','ok');go('#/tableau-de-bord');break;
-   case 'grades-save':if(!canEdit(user,r.code))return toast('Accès refusé','ko');var gc=gCollect();await S.saveGrades(r.code,gc.rows,gc.w);toast('Notes enregistrées','ok');break;
-   case 'grades-csv':var gx=gCollect();var ln=['Nom;Courriel;Intra;TP;Final;Total;Mention'];gx.rows.forEach(function(x){var t=gTotal(x,gx.w);ln.push([x.name,x.email,x.intra==null?'':x.intra,x.tp==null?'':x.tp,x.final==null?'':x.final,t==null?'':t,gMention(t)].join(';'))});
-     var al=document.createElement('a');al.href=URL.createObjectURL(new Blob(['\ufeff'+ln.join('\n')],{type:'text/csv'}));al.download='notes-'+r.code+'.csv';al.click();break;
    case 'user-new':openDialog(null);break;
    case 'user-edit':openDialog((ui.ctx.profiles||[]).find(function(u){return u.id===el.getAttribute('data-id')}));break;
    case 'user-del':var u=(ui.ctx.profiles||[]).find(function(x){return x.id===el.getAttribute('data-id')});if(!u)return;
@@ -1261,28 +1011,14 @@ document.addEventListener('click',function(e){
      await S.deleteCustomCourse(cc);delete state.custom[cc];delete state.edits[cc];toast('Cours supprimé','ok');render();break;
    case 'settings-save':var sd2=ui.settingsDraft;var out=Object.assign({},sd2);out.objectives=(sd2.objectives_text||'').split('\n').map(function(x){return x.trim()}).filter(Boolean);delete out.objectives_text;
      await S.saveSettings(out);state.settings=out;ui.settingsDraft=null;toast("Page d'accueil enregistrée",'ok');render();break;
-   case 'logo-clear':ui.settingsDraft.logo='';render();break;
-   case 'course-hide':var hc=el.getAttribute('data-code');if(!confirm('Retirer le cours '+hc+' du catalogue ? (vous pourrez le rétablir ensuite)'))return;
-     await saveStruct({hidden_courses:(getSettings().hidden_courses||[]).concat([hc])});toast('Cours retiré','ok');render();break;
-   case 'course-restore':var rc=el.getAttribute('data-code');await saveStruct({hidden_courses:(getSettings().hidden_courses||[]).filter(function(x){return x!==rc})});toast('Cours rétabli','ok');render();break;
-   case 'axis-add':var na=((document.getElementById('new-axis')||{}).value||'').trim();if(!na)return;if(axesList().indexOf(na)>=0)return toast('Cet axe existe déjà','ko');
-     await saveStruct({axes:axesList().concat([na])});toast('Axe ajouté','ok');render();break;
-   case 'axis-up':case 'axis-down':var ix=+el.getAttribute('data-i'),jx=act==='axis-up'?ix-1:ix+1,al=axesList();if(jx<0||jx>=al.length)return;var tmp=al[ix];al[ix]=al[jx];al[jx]=tmp;await saveStruct({axes:al});render();break;
-   case 'axis-rename':var ir=+el.getAttribute('data-i'),ar=axesList(),old=ar[ir];var nn=(prompt("Nouveau nom de l'axe :",old)||'').trim();if(!nn||nn===old)return;if(ar.indexOf(nn)>=0)return toast('Ce nom existe déjà','ko');
-     var alias=Object.assign({},getSettings().axis_alias||{});alias[old]=nn;delete alias[nn];ar[ir]=nn;await saveStruct({axes:ar,axis_alias:alias});toast('Axe renommé','ok');render();break;
-   case 'axis-del':var id=+el.getAttribute('data-i'),ad=axesList(),dn=ad[id];if(ad.length<2)return toast('Il faut conserver au moins un axe','ko');
-     var cnt=allCourses().filter(function(c){return c.axis===dn}).length;var rest=ad.filter(function(_,k){return k!==id});var dest=rest[0];
-     if(cnt>0){var ans=prompt('« '+dn+' » contient '+cnt+' cours. Vers quel axe les déplacer ?\n'+rest.map(function(x,k){return (k+1)+') '+x}).join('\n')+'\n\nNuméro :','1');if(ans==null)return;var pick=rest[(parseInt(ans,10)||1)-1];if(!pick)return toast('Choix invalide','ko');dest=pick}
-     else if(!confirm('Supprimer l\'axe « '+dn+' » ?'))return;
-     var al2=Object.assign({},getSettings().axis_alias||{});al2[dn]=dest;await saveStruct({axes:rest,axis_alias:al2});toast('Axe supprimé','ok');render();break;
-   case 'settings-reset':if(!confirm("Rétablir les textes, polices et couleurs d'origine ? (les axes et cours retirés sont conservés)"))return;var keep0=getSettings();var keep={axes:keep0.axes,axis_alias:keep0.axis_alias,hidden_courses:keep0.hidden_courses};await S.saveSettings(keep);state.settings=keep;ui.settingsDraft=null;toast('Valeurs par défaut rétablies','ok');render();break;
+   case 'settings-reset':if(!confirm("Rétablir les textes et couleurs d'origine ?"))return;await S.saveSettings({});state.settings={};ui.settingsDraft=null;toast('Valeurs par défaut rétablies','ok');render();break;
    case 'jitsi-gen':if(ui.blockDlg){ui.blockDlg.url=jitsiUrl(ui.blockDlg.code);var ue=document.querySelector('[data-b=url]');if(ue)ue.value=ui.blockDlg.url}break;
    case 'dlg-close':closeDialog();break;
    case 'dlg-save':await saveDialog();break;
   }}catch(err){fail(err)}})()});
 async function postForum(){var r=route();var inp=document.getElementById('forum-input');if(!inp)return;var t=inp.value.trim();if(!t)return;
   try{await S.addForum(r.code,t);render()}catch(e){fail(e)}}
-document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='forum-input'){e.preventDefault();postForum()}if(e.key==='Escape'&&(ui.dialog||ui.blockDlg||ui.courseDlg||ui.csvDlg))closeDialog()});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='forum-input'){e.preventDefault();postForum()}if(e.key==='Escape'&&(ui.dialog||ui.blockDlg||ui.courseDlg))closeDialog()});
 document.addEventListener('submit',function(e){
   if(e.target.id!=='login-form')return;e.preventDefault();
   var errBox=document.getElementById('login-err');var btn=document.getElementById('login-btn');
@@ -1299,8 +1035,6 @@ document.addEventListener('submit',function(e){
     ui.authMsg='';go('#/tableau-de-bord');
   }catch(err){errBox.innerHTML='<div class="err">'+esc(err.message)+'</div>';btn.disabled=false}})()});
 document.addEventListener('input',function(e){var t=e.target;
-  if(t.hasAttribute&&t.hasAttribute('data-csv')&&ui.csvDlg){ui.csvDlg[t.getAttribute('data-csv')]=t.value;return}
-  if(t.classList&&(t.classList.contains('gin')||t.classList.contains('gw'))){gRecalc();return}
   if(t.id==='course-search'){ui.q=t.value;document.getElementById('grid').innerHTML=gridHTML();return}
   if(t.id==='user-search'){ui.adminQ=t.value;document.getElementById('users-table').innerHTML=usersTable();return}
   if(t.hasAttribute('data-bind')&&ui.draft){ui.draft[t.getAttribute('data-bind')]=t.value;return}
@@ -1311,12 +1045,7 @@ document.addEventListener('input',function(e){var t=e.target;
     if(t.type==='color'){var cd=t.parentNode.querySelector('code');if(cd)cd.textContent=t.value;applyTheme(Object.assign(getSettings(),ui.settingsDraft))}return}
   if(t.hasAttribute('data-d')&&ui.dialog&&t.tagName==='INPUT'){ui.dialog[t.getAttribute('data-d')]=t.value;return}});
 document.addEventListener('change',function(e){var t=e.target;
-  if(t.hasAttribute&&t.hasAttribute('data-csv')&&ui.csvDlg){ui.csvDlg[t.getAttribute('data-csv')]=t.value;return}
-  if(t.hasAttribute&&t.hasAttribute('data-csvfile')&&ui.csvDlg){var cf=t.files&&t.files[0];if(!cf)return;var fr=new FileReader();fr.onload=function(){ui.csvDlg.text=String(fr.result||'');renderCsvDialog()};fr.readAsText(cf,'utf-8');return}
   if(t.id==='role-filter'){ui.adminRole=t.value;document.getElementById('users-table').innerHTML=usersTable();return}
-  if(t.tagName==='SELECT'&&t.hasAttribute('data-s')&&ui.settingsDraft){ui.settingsDraft[t.getAttribute('data-s')]=t.value;applyTheme(Object.assign(getSettings(),ui.settingsDraft));return}
-  if(t.hasAttribute('data-logo')&&ui.settingsDraft){var lf=t.files&&t.files[0];if(!lf)return;readLogo(lf).then(function(du){ui.settingsDraft.logo=du;render()}).catch(fail);return}
-  if(t.hasAttribute('data-ce')){changeCourseField(t.getAttribute('data-code'),t.getAttribute('data-ce'),t.value);return}
   if(t.tagName==='SELECT'){
     if(t.hasAttribute('data-bind')&&ui.draft){ui.draft[t.getAttribute('data-bind')]=t.value;return}
     if(t.hasAttribute('data-b')&&ui.blockDlg){ui.blockDlg[t.getAttribute('data-b')]=t.value;return}
@@ -1338,7 +1067,6 @@ window.addEventListener('hashchange',render);
 (async function boot(){
   try{
     if(CLOUD&&!CLOUD_LIB_OK){state.ready=true;render();return}
-    if(S.mode==='cloud'&&S.onRecovery)S.onRecovery(function(){ui.recovery=true;try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}render()});
     await loadSettings();applyTheme(getSettings());
     state.user=await S.init();
     if(state.user)await loadShared();
